@@ -1,0 +1,3 @@
+numpy>=1.26
+pymavlink>=2.4.40
+aiohttp>=3.9

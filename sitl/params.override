@@ -1,0 +1,10 @@
+# PX4 parameter overlay, applied by the agent over MAVLink right after it
+# connects (runtime-settable parameters only — no image rebuild needed).
+# Format: NAME VALUE, '#' starts a comment. Integer-looking values are sent
+# as INT32, everything else as REAL32.
+
+# The demo flies offboard with no RC and no GCS failsafe supervision.
+NAV_RCL_ACT 0        # RC loss failsafe: disabled
+NAV_DLL_ACT 0        # datalink loss failsafe: disabled
+COM_RCL_EXCEPT 4     # ignore RC loss while in offboard mode
+COM_OF_LOSS_T 5.0    # offboard signal loss timeout [s]

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>airkal — low-rate peer state sharing demo</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <h1>airkal</h1>
+  <span class="subtitle">low-rate peer state sharing over UDP · Kalman prediction between updates</span>
+  <nav class="tabs">
+    <button id="tab-live" class="active">live</button>
+    <button id="tab-design">design</button>
+  </nav>
+  <span class="badges">
+    <span id="docker" class="badge na" title="SITL docker containers seen by the C2 host">sitl —</span>
+    <span id="conn" class="badge off">disconnected</span>
+  </span>
+</header>
+
+<main id="view-live">
+  <section class="panel" id="panel-controls">
+    <h2>Controls</h2>
+    <div class="control-row">
+      <label for="rate-slider">fleet share rate</label>
+      <input type="range" id="rate-slider" min="0" max="100" value="85">
+      <span id="rate-value" class="mono">5.0 Hz</span>
+      <button id="rate-pause">pause (0 Hz)</button>
+    </div>
+    <p class="hint">How often every drone broadcasts its state (position +
+      velocity) to its peers, 0.1–10 Hz on a log slider. Between updates each
+      drone runs a Kalman filter to predict where its peers are — lower the
+      rate to save bandwidth and watch the prediction error grow.
+      <em>pause</em> stops sharing entirely.</p>
+    <div class="control-row">
+      <label for="override-id">per-drone override</label>
+      <select id="override-id"></select>
+      <input type="number" id="override-hz" min="0" max="10" step="0.1" value="1.0" class="mono">
+      <span class="unit mono">Hz</span>
+      <button id="override-apply">set</button>
+    </div>
+    <p class="hint">Give one drone its own share rate, independent of the
+      fleet slider — e.g. throttle a single drone to 1 Hz (or 0.2 Hz for
+      full drama) and watch its uncertainty circles grow on the map while
+      the others stay tight.</p>
+    <div class="control-row">
+      <label>pattern</label>
+      <button id="pattern-start">start</button>
+      <button id="pattern-stop">stop</button>
+      <button id="pattern-land">land</button>
+      <span id="cmd-status" class="mono"></span>
+    </div>
+    <p class="hint"><em>start</em>: arm, climb (30 m + 5 m per drone id) and
+      fly a shared 40 m-radius orbit — altitude separation keeps it
+      collision-free. <em>stop</em>: hold current position.
+      <em>land</em>: auto-land and disarm.</p>
+  </section>
+
+  <section class="panel" id="panel-fleet">
+    <h2>Fleet</h2>
+    <table id="fleet-table">
+      <thead>
+        <tr>
+          <th>id</th><th>mode</th><th>phase</th><th>armed</th>
+          <th>position NED [m]</th><th>rate cmd→applied</th>
+          <th>state msg/s (netstats)</th><th>tx msgs (agent)</th><th>seen</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section class="panel" id="panel-map">
+    <h2>Map — top-down NED
+      <label class="inline">observer
+        <select id="observer-id"></select>
+      </label>
+    </h2>
+    <canvas id="map" width="640" height="640"></canvas>
+    <div class="legend mono">● true position &nbsp; ✕ observer's prediction &nbsp; ◯ 1σ / 2σ uncertainty</div>
+    <div class="legend">Axes: horizontal → East [m], vertical ↑ North [m]
+      (top-down NED view, grid every 20 m). Altitude (the Down component) is
+      not shown — drones orbiting the same circle are separated by height.</div>
+  </section>
+
+  <section class="panel" id="panel-charts">
+    <h2>Charts</h2>
+    <h3>UDP bytes/s per channel (netstats)</h3>
+    <canvas id="chart-bw" width="640" height="220"></canvas>
+    <h3>prediction error per pair [m]</h3>
+    <canvas id="chart-err" width="640" height="220"></canvas>
+  </section>
+</main>
+
+<main id="view-design" hidden>
+  <aside class="panel" id="design-nav">
+    <h2>Design docs</h2>
+    <ul id="design-list"></ul>
+  </aside>
+  <article class="panel md" id="design-content">
+    <p class="md-status">loading…</p>
+  </article>
+</main>
+
+<script src="/charts.js"></script>
+<script src="/map.js"></script>
+<script src="/design.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
