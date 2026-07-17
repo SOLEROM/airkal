@@ -1,10 +1,14 @@
-# "AirKal" — low-rate peer state sharing over UDP with Kalman prediction
+# "AirKal" / Learning-Exercise /  low-rate peer state sharing over UDP with Kalman prediction
 
 A self-contained PX4 SITL demo of one concept: drones share their fused
 GPS/position state with each other at a **low, runtime-controllable rate**
 over UDP, and every receiver bridges the gaps with a small **Kalman filter
 per peer** — position, velocity and an honestly growing uncertainty are
-always available, regardless of the share rate. Full design: [PLAN.md](PLAN.md).
+always available, regardless of the share rate. 
+* v1 version planning [PLAN.md](PLAN.md) - currnet
+* v2 version planning [PLAN2.md](plan2.md) - WIP
+* v3 ? rf signals
+* v4 ? vision assisted relative navigation
 
 ![alt text](./media/image.png)
 
